@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">dropbox</string>
+    <string name="login_button">Enter</string>
+    <string name="registration">registration</string>
+</resources>
