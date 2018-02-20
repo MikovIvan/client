@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,8 +15,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import static com.example.dropbox.Constants.PORT;
-import static com.example.dropbox.Constants.SERVER_IP;
+import static com.example.dropbox.constants.Constants.PORT;
+import static com.example.dropbox.constants.Constants.SERVER_IP;
 
 
 public class Login extends AppCompatActivity {
@@ -78,12 +77,6 @@ public class Login extends AppCompatActivity {
                 in = new DataInputStream(socket.getInputStream());
                 out.writeUTF("/auth" + " " + email.getText().toString() + " " + password.getText().toString());
                 serverMessage = in.readUTF();
-                if (serverMessage.startsWith("/authok")) {
-                    Intent intent = new Intent(Login.this, MainActivity.class);
-                    startActivity(intent);
-                } else if(serverMessage.startsWith("/authfailed")){
-                    Toast.makeText(Login.this, "Failed", Toast.LENGTH_SHORT).show();
-                }
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -96,6 +89,17 @@ public class Login extends AppCompatActivity {
                 }
             }
             return serverMessage;
+        }
+
+        @Override
+        protected void onPostExecute(String serverMessage) {
+            super.onPostExecute(serverMessage);
+            if (serverMessage.startsWith("/authok")) {
+                Intent intent = new Intent(Login.this, MainActivity.class);
+                startActivity(intent);
+            } else if (serverMessage.startsWith("/authfailed")) {
+                Toast.makeText(Login.this, "Failed", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
