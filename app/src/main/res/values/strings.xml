@@ -2,4 +2,5 @@
     <string name="app_name">dropbox</string>
     <string name="login_button">Enter</string>
     <string name="registration">registration</string>
+    <string name="add_file">add file</string>
 </resources>
