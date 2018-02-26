@@ -12,6 +12,10 @@ import android.widget.Toast;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 import static com.example.dropbox.constants.Constants.PORT;
@@ -55,8 +59,10 @@ public class Registration extends AppCompatActivity {
         int dstPort;
 
         Socket socket = null;
-        DataOutputStream out = null;
-        DataInputStream in = null;
+        OutputStream out = null;
+        InputStream in = null;
+        ObjectInputStream inputObj = null;
+        ObjectOutputStream outputObj = null;
 
         public ClientTask(String IP, int port, String s) {
             this.dstIP = IP;
@@ -69,12 +75,16 @@ public class Registration extends AppCompatActivity {
 
             try {
                 socket = new Socket(SERVER_IP, PORT);
-                out = new DataOutputStream(socket.getOutputStream());
-                in = new DataInputStream(socket.getInputStream());
-                out.writeUTF("/reg" + " " + regName.getText().toString()+ " " + regSurname.getText().toString()+ " "+
+                out = socket.getOutputStream();
+                in = socket.getInputStream();
+                outputObj = new ObjectOutputStream(out);
+                inputObj = new ObjectInputStream(in);
+                outputObj.writeObject("/reg" + " " + regName.getText().toString()+ " " + regSurname.getText().toString()+ " "+
                         regEmail.getText().toString()+ " "+regPassword.getText().toString());
-                serverMessage = in.readUTF();
+                serverMessage = String.valueOf(inputObj.readObject());
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } finally {
                 if (socket != null) {
